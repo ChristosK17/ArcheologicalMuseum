@@ -5,51 +5,47 @@ class MuseumDatabase:
         self.conn = sqlite3.connect(db_name)
         self.cursor = self.conn.cursor()
         with open(tableSchemaPath, "r") as table:
-            self.cursor.execute(table.read())
-        # (f'''
-        #     CREATE TABLE IF NOT EXISTS {table_name} (
-        #         {columns}
-        #     )
-        # ''')
+            for command in table.read().split(");")[:-1]:
+                self.cursor.execute(command.replace("\n", "")+");")
         self.conn.commit()
 
     def create(self, tableName, **kwargs):
-        #self.cursor.execute(
         columns = ', '.join(kwargs.keys())
         values = ', '.join(map(lambda x: f'"{x}"', kwargs.values()))
-        print(f"""INSERT INTO {tableName} ({columns}) VALUES ({values})""") # ", ".join(kwargs.values())
+        query = f"""INSERT INTO {tableName} ({columns}) VALUES ({values})"""
+        self.cursor.execute(query)
         self.conn.commit()
 
     def readAll(self, tableName):
-        #self.cursor.execute(
-        print(f"""SELECT * FROM {tableName}""")
-        self.conn.commit()
+        query = f"""SELECT * FROM {tableName}"""
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
 
     def readBy(self, tableName, **kwargs):
-        #self.cursor.execute(
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in kwargs.items()])
-        print(f"""SELECT * FROM {tableName} WHERE {conditions}""")
-        self.conn.commit()
-
+        query = f"""SELECT * FROM {tableName} WHERE {conditions}"""
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+        
     def deleteAll(self, tableName):
-        #self.cursor.execute(
-        print(f"""DELETE FROM {tableName}""")
+        query = f"""DELETE FROM {tableName}"""
+        self.cursor.execute(query)
         self.conn.commit()
 
     def deleteBy(self, tableName, **kwargs):
-        #self.cursor.execute(
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in kwargs.items()])
-        print(f"""DELETE FROM {tableName} WHERE {conditions}""")
+        query = f"""DELETE FROM {tableName} WHERE {conditions}"""
+        self.cursor.execute(query)
         self.conn.commit()
 
 
 if __name__ == "__main__":
-    museum_db = MuseumDatabase('ArcheologicalMuseum.db', "file/path/tableSchema.txt")
+    museum_db = MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
     
-    museum_db.create("agalma", peos="megalo", orthio="mono gia esena", koiliakoi="vevaios", arxaioellhnikos_popos="kai to rotas?")
+    museum_db.create("EMPLOEEY", specialty="Archeologist")
     
-    print()
-
-    museum_db.readBy("agalma", peos="megalo", orthio="mono gia esena", koiliakoi="vevaios", arxaioellhnikos_popos="kai to rotas?")
+    result = museum_db.readAll("EMPLOEEY")
+    
+    print(result)
 
     museum_db.conn.close()
