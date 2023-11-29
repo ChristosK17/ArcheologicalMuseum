@@ -20,10 +20,14 @@ CREATE TABLE IF NOT EXISTS "VISITS" (
 	PRIMARY KEY ("id")
 );
 
-CREATE TABLE IF NOT EXISTS "TICKET" (
+CREATE TABLE IF NOT EXISTS "EVENT_TICKET" (
 	"id" integer,
 	"category" string,
-	PRIMARY KEY ("id")
+	"eventId" integer,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS "EVENT" (
@@ -32,7 +36,11 @@ CREATE TABLE IF NOT EXISTS "EVENT" (
 	"description" text,
 	"startDate" date,
 	"endDate" date,
-	PRIMARY KEY ("id")
+	"eventRoomId" integer,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("eventRoomId") REFERENCES "EVENT_ROOM" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS "EVENT_ROOM" (
@@ -40,6 +48,7 @@ CREATE TABLE IF NOT EXISTS "EVENT_ROOM" (
 	"name" string,
 	"description" text,
 	"availability" boolean,
+	"capacity" integer,
 	PRIMARY KEY ("id")
 );
 
@@ -49,7 +58,12 @@ CREATE TABLE IF NOT EXISTS "REQUEST" (
 	"submitionDate" date,
 	"startDate" date,
 	"endDate" date,
-	PRIMARY KEY ("id")
+	"personId" integer,
+	"" ,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("personId") REFERENCES "PERSON" ("id")
+            ON UPDATE CASCADE
+            ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS "EXGANGE_REQUEST" (
@@ -73,12 +87,16 @@ CREATE TABLE IF NOT EXISTS "RESEARCH_REQUEST" (
 CREATE TABLE IF NOT EXISTS "EVENT_REQUEST" (
 	"id" integer,
 	"type" string,
-	PRIMARY KEY ("id")
+	"eventId" integer,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS "ROOM_REQUEST" (
 	"id" integer,
-	"attendance" integer,
+	"pieceCapacity" integer,
 	"description" text,
 	PRIMARY KEY ("id")
 );
@@ -92,7 +110,15 @@ CREATE TABLE IF NOT EXISTS "EXHIBIT" (
 	"value" integer,
 	"exavationPlace" text,
 	"exavationDate" date,
-	PRIMARY KEY ("id")
+	"categoryId" integer,
+	"positionId" varchar,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("categoryId") REFERENCES "CATEGORY" ("id")
+            ON UPDATE CASCADE
+            ON DELETE SET NULL,
+	FOREIGN KEY ("positionId") REFERENCES "POSITION" ("id")
+            ON UPDATE CASCADE
+            ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS "POSITION" (
@@ -115,7 +141,11 @@ CREATE TABLE IF NOT EXISTS "DIMENSIONS" (
 	"height" float,
 	"width" float,
 	"length" float,
-	PRIMARY KEY ("id")
+	"exhibitId" string,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("exhibitId") REFERENCES "EXHIBIT" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS "PLANS" (
@@ -126,90 +156,6 @@ CREATE TABLE IF NOT EXISTS "PLANS" (
             ON UPDATE RESTRICT
             ON DELETE RESTRICT,
 	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "APPROVE" (
-	"emploeeyId" integer,
-	"requestId" integer,
-	PRIMARY KEY ("emploeeyId", "requestId"),
-	FOREIGN KEY ("emploeeyId") REFERENCES "EMPLOEEY" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("requestId") REFERENCES "REQUEST" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "MAKES" (
-	"personId" integer,
-	"requestId" integer,
-	PRIMARY KEY ("personId", "requestId"),
-	FOREIGN KEY ("personId") REFERENCES "PERSON" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("requestId") REFERENCES "REQUEST" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "REFERS_TO_EVENT" (
-	"eventReqId" integer,
-	"eventId" integer,
-	PRIMARY KEY ("eventReqId", "eventId"),
-	FOREIGN KEY ("eventReqId") REFERENCES "EVENT_REQUEST" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "REFERS_TO_ROOM" (
-	"roomReqId" integer,
-	"roomId" integer,
-	PRIMARY KEY ("roomReqId", "roomId"),
-	FOREIGN KEY ("roomReqId") REFERENCES "ROOM_REQUEST" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("roomId") REFERENCES "EVENT_ROOM" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "OCCUPIES" (
-	"eventId" integer,
-	"roomId" integer,
-	PRIMARY KEY ("eventId", "roomId"),
-	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("roomId") REFERENCES "EVENT_ROOM" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "ISSUE_EVENT" (
-	"eventId" integer,
-	"ticketId" integer,
-	PRIMARY KEY ("eventId", "ticketId"),
-	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("ticketId") REFERENCES "TICKET" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "ISSUE_VISIT" (
-	"visitId" integer,
-	"ticketId" integer,
-	PRIMARY KEY ("visitId", "ticketId"),
-	FOREIGN KEY ("visitId") REFERENCES "VISITS" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("ticketId") REFERENCES "TICKET" ("id")
             ON UPDATE RESTRICT
             ON DELETE RESTRICT
 );
@@ -238,39 +184,41 @@ CREATE TABLE IF NOT EXISTS "REFERS_TO_EXCHANGE" (
             ON DELETE RESTRICT
 );
 
-CREATE TABLE IF NOT EXISTS "PLACED" (
-	"exhibitId" varchar,
-	"positionId" string,
-	PRIMARY KEY ("exhibitId", "positionId"),
-	FOREIGN KEY ("exhibitId") REFERENCES "EXHIBIT" ("id")
-            ON UPDATE RESTRICT
+CREATE TABLE IF NOT EXISTS "APPROVE" (
+	"id" integer,
+	"approveDate" date,
+	"requestId" integer,
+	"employeeId" integer,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("requestId") REFERENCES "REQUEST" ("id")
+            ON UPDATE CASCADE
             ON DELETE RESTRICT,
-	FOREIGN KEY ("positionId") REFERENCES "POSITION" ("id")
-            ON UPDATE RESTRICT
+	FOREIGN KEY ("employeeId") REFERENCES "EMPLOEEY" ("id")
+            ON UPDATE CASCADE
+            ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS "VISIT_TICKET" (
+	"id" integer,
+	"category" varchar,
+	"visitId" integer,
+	PRIMARY KEY ("id"),
+	FOREIGN KEY ("visitId") REFERENCES "VISITS" ("id")
+            ON UPDATE CASCADE
             ON DELETE RESTRICT
 );
 
-CREATE TABLE IF NOT EXISTS "BELONGS" (
-	"exhibitId" string,
-	"categoryId" integer,
-	PRIMARY KEY ("exhibitId", "categoryId"),
-	FOREIGN KEY ("exhibitId") REFERENCES "EXHIBIT" ("id")
-            ON UPDATE RESTRICT
+CREATE TABLE IF NOT EXISTS "REQUEST_REFERS_ROOM" (
+	"roomId" integer,
+	"requestId" integer,
+	"startDate" date,
+	"endDate" date,
+	PRIMARY KEY ("roomId", "requestId"),
+	FOREIGN KEY ("roomId") REFERENCES "EVENT_ROOM" ("id")
+            ON UPDATE CASCADE
             ON DELETE RESTRICT,
-	FOREIGN KEY ("categoryId") REFERENCES "CATEGORY" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS "HAS" (
-	"exhibitId" varchar,
-	"dimentionsId" integer,
-	PRIMARY KEY ("exhibitId", "dimentionsId"),
-	FOREIGN KEY ("exhibitId") REFERENCES "EXHIBIT" ("id")
-            ON UPDATE RESTRICT
-            ON DELETE RESTRICT,
-	FOREIGN KEY ("dimentionsId") REFERENCES "DIMENSIONS" ("id")
-            ON UPDATE RESTRICT
+	FOREIGN KEY ("requestId") REFERENCES "ROOM_REQUEST" ("id")
+            ON UPDATE CASCADE
             ON DELETE RESTRICT
 );
 

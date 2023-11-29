@@ -26,6 +26,13 @@ class MuseumDatabase:
         query = f"""SELECT * FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
+    
+    def updateBy(self, tableName, toUpdate, conditions):
+        toUpdate = ' AND '.join([f'{key} = "{value}"' for key, value in toUpdate.items()])
+        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in conditions.items()])
+        query = f"""SELECT * FROM {tableName} SET {toUpdate} WHERE {conditions}"""
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
         
     def deleteAll(self, tableName):
         query = f"""DELETE FROM {tableName}"""
