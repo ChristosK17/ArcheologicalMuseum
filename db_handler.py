@@ -1,4 +1,5 @@
 import sqlite3
+from timer import timeIt
 
 class MuseumDatabase:
     def __init__(self, db_name, tableSchemaPath):
@@ -9,9 +10,10 @@ class MuseumDatabase:
                 self.cursor.execute(command.replace("\n", "")+");")
         self.conn.commit()
 
-    def create(self, tableName, **kwargs):
-        columns = ', '.join(kwargs.keys())
-        values = ', '.join(map(lambda x: f'"{x}"', kwargs.values()))
+    @timeIt
+    def create(self, tableName, attributes):
+        columns = ', '.join(attributes.keys())
+        values = ', '.join(map(lambda x: f'"{x}"', attributes.values()))
         query = f"""INSERT INTO {tableName} ({columns}) VALUES ({values})"""
         self.cursor.execute(query)
         self.conn.commit()
@@ -21,8 +23,8 @@ class MuseumDatabase:
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
-    def readBy(self, tableName, **kwargs):
-        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in kwargs.items()])
+    def readBy(self, tableName, attributes):
+        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()])
         query = f"""SELECT * FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
@@ -39,8 +41,8 @@ class MuseumDatabase:
         self.cursor.execute(query)
         self.conn.commit()
 
-    def deleteBy(self, tableName, **kwargs):
-        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in kwargs.items()])
+    def deleteBy(self, tableName, attributes):
+        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()])
         query = f"""DELETE FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
         self.conn.commit()
@@ -49,10 +51,11 @@ class MuseumDatabase:
 if __name__ == "__main__":
     museum_db = MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
     
-    museum_db.create("EMPLOEEY", specialty="Archeologist")
+    museum_db.create(tableName="EMPLOEEY", attributes={"id":2314,"specialty":"test3" })
     
     result = museum_db.readAll("EMPLOEEY")
     
     print(result)
 
     museum_db.conn.close()
+    
