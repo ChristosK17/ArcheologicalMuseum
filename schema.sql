@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "PERSON" (
 	PRIMARY KEY ("id")
 );
 
-CREATE TABLE IF NOT EXISTS "EMPLOEEY" (
+CREATE TABLE IF NOT EXISTS "EMPLOYEE" (
 	"id" integer,
 	"specialty" string,
 	PRIMARY KEY ("id")
@@ -149,10 +149,10 @@ CREATE TABLE IF NOT EXISTS "DIMENSIONS" (
 );
 
 CREATE TABLE IF NOT EXISTS "PLANS" (
-	"emploeeyId" integer,
+	"employeeId" integer,
 	"eventId" integer,
-	PRIMARY KEY ("emploeeyId", "eventId"),
-	FOREIGN KEY ("emploeeyId") REFERENCES "EMPLOEEY" ("id")
+	PRIMARY KEY ("employeeId", "eventId"),
+	FOREIGN KEY ("employeeId") REFERENCES "EMPLOYEE" ("id")
             ON UPDATE RESTRICT
             ON DELETE RESTRICT,
 	FOREIGN KEY ("eventId") REFERENCES "EVENT" ("id")
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS "APPROVE" (
 	FOREIGN KEY ("requestId") REFERENCES "REQUEST" ("id")
             ON UPDATE CASCADE
             ON DELETE RESTRICT,
-	FOREIGN KEY ("employeeId") REFERENCES "EMPLOEEY" ("id")
+	FOREIGN KEY ("employeeId") REFERENCES "EMPLOYEE" ("id")
             ON UPDATE CASCADE
             ON DELETE SET NULL
 );
