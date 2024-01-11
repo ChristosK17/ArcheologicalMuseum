@@ -2,39 +2,75 @@ import sqlite3
 from timer import timeIt
 
 class MuseumDatabase:
+    """
+    Database Handler
+    """
+    
     def __init__(self, db_name, tableSchemaPath):
-        self.conn = sqlite3.connect(db_name)
-        self.cursor = self.conn.cursor()
-        with open(tableSchemaPath, "r") as table:
+        """
+        Class initializer. Connects to database, 
+        initialize cursos and generates tables from files
+        """
+        self.conn = sqlite3.connect(db_name) # Initialize connection
+        self.cursor = self.conn.cursor() # Initialize cursor
+        with open(tableSchemaPath, "r") as table: # Generate tables from file
             for command in table.read().split(");")[:-1]:
                 self.cursor.execute(command.replace("\n", "")+");")
         self.conn.commit()
 
     # CRUD Implementation
 
-    @timeIt
+    @timeIt # Decorator to time function
     def create(self, tableName, attributes):
-        columns = ', '.join(attributes.keys())
-        values = ', '.join(map(lambda x: f'"{x}"', attributes.values()))
-        query = f"""INSERT INTO {tableName} ({columns}) VALUES ({values})"""
+        """
+        Abstract implementation of create operation
+        tableName : str
+            name of table
+        attributes : dict
+            dictionary with format {"id":5, "name":"Alex"}
+        """
+        columns = ', '.join(attributes.keys()) # Construct attribute name sequence
+        values = ', '.join(map(lambda x: f'"{x}"', attributes.values())) # Construct attribute value sequence
+        query = f"""INSERT INTO {tableName} ({columns}) VALUES ({values})""" # Construct querie
         self.cursor.execute(query)
         self.conn.commit()
 
     @timeIt
     def readAll(self, tableName):
+        """
+        Abstract implementation of read all operation
+        tableName : str
+            name of table
+        """
         query = f"""SELECT * FROM {tableName}"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     @timeIt
     def readBy(self, tableName, attributes):
-        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()])
+        """
+        Abstract implementation of read by operation
+        tableName : str
+            name of table
+        attributes : dict
+            dictionary with format {"id":5, "name":"Alex"}
+        """
+        conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()]) # Construct string to filter attributes
         query = f"""SELECT * FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
     
     @timeIt
     def updateBy(self, tableName, toUpdate, conditions):
+        """
+        Abstract implementation of read by operation
+        tableName : str
+            name of table
+        toUpdate : dict
+            dictionary with format {"id":5, "name":"Alex"}
+        conditions : dict
+            dictionary with format {"id":5, "name":"Alex"}
+        """
         toUpdate = ' , '.join([f'{key} = "{value}"' for key, value in toUpdate.items()])
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in conditions.items()])
         query = f"""UPDATE {tableName} SET {toUpdate} WHERE {conditions}"""
@@ -44,12 +80,24 @@ class MuseumDatabase:
     
     @timeIt
     def deleteAll(self, tableName):
+        """
+        Abstract implementation of delete all operation
+        tableName : str
+            name of table
+        """
         query = f"""DELETE FROM {tableName}"""
         self.cursor.execute(query)
         self.conn.commit()
 
     @timeIt
     def deleteBy(self, tableName, attributes):
+        """
+        Abstract implementation of create operation
+        tableName : str
+            name of table
+        attributes : dict
+            dictionary with format {"id":5, "name":"Alex"}
+        """
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()])
         query = f"""DELETE FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
@@ -59,10 +107,18 @@ class MuseumDatabase:
 
     @timeIt
     def query(self, query):
+        """
+        Simple function to execute querie
+        """
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def generateToTestRelations(self):
+        """
+        Function to generate data in order to test
+        the database. It loads all the insert operations
+        from a local file and executes them.
+        """
         query_list = """
 insert into VISITS (id, date, category) values (16, '5/11/2023', 'Adult');
 insert into VISITS (id, date, category) values (86, '6/5/2023', 'Elderly');
@@ -117,6 +173,13 @@ insert into EVENT_ROOM (id, name, description, capacity) values (2, 'Kentrikh', 
     
     @timeIt
     def generateToTestPerformance(self, amount):
+        """
+        Simple function to generate batches of
+        data and time the performace of the database.
+
+        amount : int
+            amount of data to generate
+        """
         from faker import Faker
         import random
         fake = Faker("el_GR")
@@ -127,15 +190,27 @@ insert into EVENT_ROOM (id, name, description, capacity) values (2, 'Kentrikh', 
     
     # Custom Queries
     def getExhibitByCategoryName(self, categoryName):
+        """
+        Custom querie to get exhibits by category name.
+        """
         return self.query(f"SELECT EXHIBIT.name FROM EXHIBIT WHERE EXHIBIT.categoryId IN (SELECT CATEGORY.id FROM CATEGORY WHERE CATEGORY.name='{categoryName}')")
     
     def getExhibitPosition(self, exhibitId):
+        """
+        Custom querie to get exhibit position.
+        """
         return self.query(f"SELECT row, column FROM POSITION WHERE id IN ( SELECT positionId FROM EXHIBIT WHERE id='{exhibitId}' )")
     
     def getEventCategories(self):
+        """
+        Custom querie to get categories of the events that take place.
+        """
         return self.query(f"SELECT category FROM EVENT ORDER BY category ASC")
     
     def getExhibitCategories(self):
+        """
+        Custom querie to get exhibit categories.
+        """
         return self.query(f"SELECT name FROM CATEGORY ORDER BY name ASC")
 
 if __name__ == "__main__":
