@@ -33,7 +33,7 @@ class MuseumDatabase:
     
     @timeIt
     def updateBy(self, tableName, toUpdate, conditions):
-        toUpdate = ' AND '.join([f'{key} = "{value}"' for key, value in toUpdate.items()])
+        toUpdate = ' , '.join([f'{key} = "{value}"' for key, value in toUpdate.items()])
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in conditions.items()])
         query = f"""UPDATE {tableName} SET {toUpdate} WHERE {conditions}"""
         print("UPDATE QUERY: "+query)
@@ -52,6 +52,11 @@ class MuseumDatabase:
         query = f"""DELETE FROM {tableName} WHERE {conditions}"""
         self.cursor.execute(query)
         self.conn.commit()
+    
+    @timeIt
+    def query(self, query):
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
 
     def generateToTestRelations(self):
         query_list = """
@@ -61,6 +66,8 @@ class MuseumDatabase:
                 insert into VISITS (id, date, category) values (77, '2/23/2023', 'Adult');
                 insert into VISITS (id, date, category) values (46, '12/18/2023', 'Adult');
                 insert into VISIT_TICKET (id, category, visitId) values (27, 'Adult', 16);
+                insert into VISIT_TICKET (id, category, visitId) values (35, 'Disabled', 16);
+                insert into VISIT_TICKET (id, category, visitId) values (64, 'Adult', 16);
                 insert into VISIT_TICKET (id, category, visitId) values (74, 'Elderly', 86);
                 insert into VISIT_TICKET (id, category, visitId) values (21, 'Disabled', 36);
                 insert into VISIT_TICKET (id, category, visitId) values (68, 'Adult', 77);
@@ -90,6 +97,9 @@ if __name__ == "__main__":
     museum_db.deleteAll("VISIT_TICKET")
 
     museum_db.generateToTestRelations()
+    
+    result = museum_db.query("SELECT * FROM VISIT_TICKET WHERE visitId=16")
+    print(result)
     
     result = museum_db.readAll("VISITS")
     print(result)
@@ -122,4 +132,3 @@ if __name__ == "__main__":
 
 
     museum_db.conn.close()
-    
