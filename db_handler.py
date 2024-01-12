@@ -10,6 +10,17 @@ class MuseumDatabase:
         """
         Class initializer. Connects to database, 
         initialize cursos and generates tables from files
+        
+        Parameters
+        ----------
+        dbname : str
+            name of the database
+        tableSchemaPath : str
+            path of table schema to 
+        
+        Returns
+        -------
+        none
         """
         self.conn = sqlite3.connect(db_name) # Initialize connection
         self.cursor = self.conn.cursor() # Initialize cursor
@@ -24,10 +35,17 @@ class MuseumDatabase:
     def create(self, tableName, attributes):
         """
         Abstract implementation of create operation
+
+        Parameters
+        ----------
         tableName : str
             name of table
         attributes : dict
             dictionary with format {"id":5, "name":"Alex"}
+
+        Returns
+        -------
+        none
         """
         columns = ', '.join(attributes.keys()) # Construct attribute name sequence
         values = ', '.join(map(lambda x: f'"{x}"', attributes.values())) # Construct attribute value sequence
@@ -39,8 +57,15 @@ class MuseumDatabase:
     def readAll(self, tableName):
         """
         Abstract implementation of read all operation
+        
+        Parameters
+        ----------
         tableName : str
             name of table
+        Returns
+        -------
+        list
+            A list of all fetched results
         """
         query = f"""SELECT * FROM {tableName}"""
         self.cursor.execute(query)
@@ -50,10 +75,17 @@ class MuseumDatabase:
     def readBy(self, tableName, attributes):
         """
         Abstract implementation of read by operation
+        
+        Parameters
+        ----------
         tableName : str
             name of table
         attributes : dict
             dictionary with format {"id":5, "name":"Alex"}
+        Returns
+        -------
+        list
+            A list of all fetched results filtered by attributes
         """
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()]) # Construct string to filter attributes
         query = f"""SELECT * FROM {tableName} WHERE {conditions}"""
@@ -64,12 +96,18 @@ class MuseumDatabase:
     def updateBy(self, tableName, toUpdate, conditions):
         """
         Abstract implementation of read by operation
+
+        Parameters
+        ----------
         tableName : str
             name of table
         toUpdate : dict
             dictionary with format {"id":5, "name":"Alex"}
         conditions : dict
             dictionary with format {"id":5, "name":"Alex"}
+        Returns
+        -------
+        none
         """
         toUpdate = ' , '.join([f'{key} = "{value}"' for key, value in toUpdate.items()])
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in conditions.items()])
@@ -82,8 +120,14 @@ class MuseumDatabase:
     def deleteAll(self, tableName):
         """
         Abstract implementation of delete all operation
+        
+        Parameters
+        ----------
         tableName : str
             name of table
+        Returns
+        -------
+        none
         """
         query = f"""DELETE FROM {tableName}"""
         self.cursor.execute(query)
@@ -93,10 +137,16 @@ class MuseumDatabase:
     def deleteBy(self, tableName, attributes):
         """
         Abstract implementation of create operation
+
+        Parameters
+        ----------
         tableName : str
             name of table
         attributes : dict
             dictionary with format {"id":5, "name":"Alex"}
+        Returns
+        -------
+        none
         """
         conditions = ' AND '.join([f'{key} = "{value}"' for key, value in attributes.items()])
         query = f"""DELETE FROM {tableName} WHERE {conditions}"""
@@ -109,6 +159,14 @@ class MuseumDatabase:
     def query(self, query):
         """
         Simple function to execute querie
+                Parameters
+        ----------
+        query : str
+            The query we want to execute
+        Returns
+        -------
+        list
+            A list of all fetched results
         """
         self.cursor.execute(query)
         return self.cursor.fetchall()
