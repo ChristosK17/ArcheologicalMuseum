@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS "EVENT_ROOM" (
 	"id" integer,
 	"name" string,
 	"description" text,
-	"availability" boolean,
 	"capacity" integer,
 	PRIMARY KEY ("id")
 );
@@ -105,7 +104,6 @@ CREATE TABLE IF NOT EXISTS "EXHIBIT" (
 	"id" varchar,
 	"name" string,
 	"matterial" string,
-	"rythm" string,
 	"description" text,
 	"value" integer,
 	"exavationPlace" text,
