@@ -230,6 +230,12 @@ class MuseumDatabase:
         Custom querie to get the amount of tickets for an event.
         """
         return self.query(f"SELECT eventId, COUNT(*) FROM EVENT_TICKET GROUP BY eventId")
+    
+    def getEventByDateBetween(self, startDate, endDate):
+        """
+        Custom querie to get events by dates between.
+        """
+        return self.query(f"SELECT id FROM EVENT WHERE startDate BETWEEN '{startDate}' AND '{endDate}'")
 
 if __name__ == "__main__":
     museum_db = MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
@@ -241,14 +247,15 @@ if __name__ == "__main__":
     museum_db.generateToTestRelations()
     
     result = museum_db.getExhibitByCategoryName("ParaPolyArxaio")
-    print("Custom:", result)
+    print("Custom (getExhibitByCategoryName):", result)
     result = museum_db.getExhibitPosition('S1')
-    print("Custom:", result)
+    print("Custom (getExhibitPosition):", result)
     result = museum_db.getEventCategories()
-    print("Custom:", result)
+    print("Custom (getEventCategories):", result)
     result = museum_db.getAmountOfTicketForEvent()
-    print("Custom:", result)
-
+    print("Custom (getAmountOfTicketForEvent):", result)
+    result = museum_db.getEventByDateBetween('2024-07-01', '2024-08-31')
+    print("Custom (getEventByDateBetween):", result)
     
     result = museum_db.readAll("VISITS")
     print(result)
