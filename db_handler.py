@@ -179,7 +179,6 @@ class MuseumDatabase:
         """
         with open("dummyDataQueries.txt", "r", encoding="utf8") as f:
             query_list = f.read().split(";")
-        
         for query in query_list:
             self.cursor.execute(query+";")
             self.conn.commit()
@@ -225,6 +224,12 @@ class MuseumDatabase:
         Custom querie to get exhibit categories.
         """
         return self.query(f"SELECT name FROM CATEGORY ORDER BY name ASC")
+    
+    def getAmountOfTicketForEvent(self):
+        """
+        Custom querie to get the amount of tickets for an event.
+        """
+        return self.query(f"SELECT eventId, COUNT(*) FROM EVENT_TICKET GROUP BY eventId")
 
 if __name__ == "__main__":
     museum_db = MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
@@ -241,6 +246,9 @@ if __name__ == "__main__":
     print("Custom:", result)
     result = museum_db.getEventCategories()
     print("Custom:", result)
+    result = museum_db.getAmountOfTicketForEvent()
+    print("Custom:", result)
+
     
     result = museum_db.readAll("VISITS")
     print(result)
