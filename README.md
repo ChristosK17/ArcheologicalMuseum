@@ -1,6 +1,6 @@
 # Archeological Museum Database Handler
 
-This is an app that hadles an abstract Archeological Museum Database! It's developed with Python and uses the sqlite library for the connection with the database.
+This is an app that hadles an abstract Archeological Museum Database! It's developed with Python. It uses the sqlite library for the connection with the database and tkinter for the GUI.
 
 # File Structure
 - The ```db_handler.py``` is a custom library based on abstractions in order to make easy the CRUD implementation.
