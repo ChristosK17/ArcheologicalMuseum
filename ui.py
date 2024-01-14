@@ -10,7 +10,9 @@ from customtkinter import *
 #Main Interface
 class MainLayout:
     def __init__(self, root):
-        self.names = ['Person', 'Request', 'Event', 'Exhibit']
+        self.names = ['Person', 'Request','Event','Employee','Visits','Event ticket', 'Visit ticket','Event Room', 'Exchange Request',
+                      'Research Request', 'Event Request','Room Request','Exhibit','Position', 'Category', 'Dimensions',
+                      'Plans', 'Refers to research', 'Refers to exchange', 'Approve', 'Request refers to room']
         self.root = root
         #dimensions of the main window
         self.root.geometry("550x300")
@@ -45,17 +47,31 @@ class MainLayout:
         button_frame = tk.Frame(self.root)
         button_frame.pack(expand=True, fill='both', pady=5)
 
-        button1=customtkinter.CTkButton(master=self.root, text='Create',corner_radius=10, command=self.insert_button_click,width=100, height=10)
-        button2=customtkinter.CTkButton(master=self.root, text='Read', corner_radius=10,command=self.read_button_click,width=100, height=10)
-        button3=customtkinter.CTkButton(master=self.root, text='Update', corner_radius=10,command=self.update_button_click,width=100, height=10)
-        button4=customtkinter.CTkButton(master=self.root, text='Delete', corner_radius=10,command=self.delete_button_click,width=100, height=10)
-        button5=customtkinter.CTkButton(master=self.root, text='Exit',corner_radius=10, command=self.root.destroy,width=100, height=12)
-
-        button1.place(relx=0.1, rely=0.2, anchor=tk.W)
-        button2.place(relx=0.3, rely=0.2, anchor=tk.W)
-        button3.place(relx=0.5, rely=0.2, anchor=tk.W)
-        button4.place(relx=0.7, rely=0.2, anchor=tk.W)
-        button5.place(relx=0.8, rely=0.96, anchor=tk.SW)
+        button1=customtkinter.CTkButton(master=self.root, text='Create',corner_radius=8, command=self.insert_button_click,width=120, height=10)
+        button2=customtkinter.CTkButton(master=self.root, text='Read', corner_radius=8,command=self.read_button_click,width=120, height=10)
+        button3=customtkinter.CTkButton(master=self.root, text='Update', corner_radius=8,command=self.update_button_click,width=120, height=10)
+        button4=customtkinter.CTkButton(master=self.root, text='Delete', corner_radius=8,command=self.delete_button_click,width=120, height=10)
+        button5=customtkinter.CTkButton(master=self.root, text='Exit',corner_radius=8, command=self.root.destroy,width=120, height=12)
+        
+        button6= customtkinter.CTkButton(master=self.root, text='Exhibit by Category',corner_radius=8, command=self.exhibitbycategory_button_click,width=120, height=10)
+        button7=customtkinter.CTkButton(master=self.root, text='Exhibit Position',corner_radius=8, command=self.exhibit_position_button_click,width=120, height=10)
+        button8=customtkinter.CTkButton(master=self.root, text='Event Categories',corner_radius=8, command=self.event_categories_button_click,width=120, height=10)
+        button9=customtkinter.CTkButton(master=self.root, text='Exhibit Categories',corner_radius=8, command=self.exhibit_categories_button_click,width=120, height=10)
+        
+        #CRUD buttons
+        button1.place(relx=0.02, rely=0.2, anchor=tk.W)
+        button2.place(relx=0.28, rely=0.2, anchor=tk.W)
+        button3.place(relx=0.52, rely=0.2, anchor=tk.W)
+        button4.place(relx=0.76, rely=0.2, anchor=tk.W)
+        
+        #Custom queries buttons
+        button6.place(relx=0.02, rely=0.3, anchor=tk.W)
+        button7.place(relx=0.28, rely=0.3, anchor=tk.W)
+        button8.place(relx=0.52, rely=0.3, anchor=tk.W)
+        button9.place(relx=0.76, rely=0.3, anchor=tk.W)
+        
+        #Exit button
+        button5.place(relx=0.75, rely=0.96, anchor=tk.SW) 
     
     #Handle button clicks for inserting data
     def insert_button_click(self):
@@ -73,6 +89,57 @@ class MainLayout:
         if (selected_item == "Exhibit"):
             insert_form = Create("Exhibit", "EXHIBIT", ["id","material","description","value","excavationPlace","excavationDate","categoryId","positionId"])
             insert_form.run()
+        if (selected_item == "Employee"):
+            insert_form = Create("Employee","EMPLOYEE", ["id", "specialty"])
+            insert_form.run()
+        if (selected_item == "Visits"):
+            insert_form = Create("Visits","VISITS", ["id", "date", "category"])
+            insert_form.run()
+        if (selected_item == "Event ticket"):
+            insert_form = Create("Event ticket","EVENT_TICKET", ["id", "category", "eventId"])
+            insert_form.run()
+        if (selected_item == "Visit ticket"):
+            insert_form = Create("Visit ticket","VISIT_TICKET", ["id", "category", "visitId"])
+            insert_form.run()
+        if (selected_item == "Event Room"):
+            insert_form = Create("Event Room","EVENT_ROOM", ["id", "name", "description", "capacity"])
+            insert_form.run()
+        if (selected_item == "Exchange Request"):
+            insert_form = Create("Exchange Request","EXGANGE_REQUEST", ["id", "country", "city", "postCode", "address", "addressNumber", "phone"])
+            insert_form.run()
+        if (selected_item == "Research Request"):
+            insert_form = Create("Research Request","RESEARCH_REQUEST", ["id", "type", "description"])
+            insert_form.run()
+        if (selected_item == "Event Request"):
+            insert_form = Create("EVENT_REQUEST", ["id", "type", "eventId"])
+            insert_form.run()
+        if (selected_item == "Room Request"):
+            insert_form = Create("Room Request","ROOM_REQUEST", ["id", "pieceCapacity", "description"])
+            insert_form.run()
+        if (selected_item == "Position"):
+            insert_form = Create("Position","POSITION", ["id", "column", "row"])
+            insert_form.run()
+        if (selected_item == "Category"):
+            insert_form = Create("CATEGORY", ["id", "start_date", "end_date", "name"])
+            insert_form.run()
+        if (selected_item == "Dimensions"):
+            insert_form = Create("Dimensions","DIMENSIONS", ["id", "height", "width", "length", "exhibitId"])
+            insert_form.run()
+        if (selected_item == "Plans"):
+            insert_form = Create("Plans","PLANS", ["emploeeyId", "eventId"])
+            insert_form.run()
+        if (selected_item == 'Refers to research'):
+            insert_form = Create('Refers to research',"REFERS_TO_RESEARCH", ["researchId", "exhibitId"])
+            insert_form.run()
+        if (selected_item == "Refers to exchange"):
+            insert_form = Create("Refers to exchange","REFERS_TO_EXCHANGE", ["exchangeId", "exhibitId"])
+            insert_form.run()
+        if (selected_item == "Approve"):
+            insert_form = Create("Approve","APPROVE", ["id", "approveDate", "requestId", "employeeId"])
+            insert_form.run()
+        if (selected_item == "Request refers to room"):
+            insert_form = Create("Request refers to room", "REQUEST_REFERS_ROOM",["roomId", "requestId", "startDate", "endDate"])
+            insert_form.run()
     
     #Handle button clicks for reading data
     def read_button_click(self):
@@ -87,16 +154,67 @@ class MainLayout:
         selected_item = self.combo_box.get()
         self.root.destroy()
         if (selected_item == "Person"):
-            update_form = Update("PERSON", ["id","firstName","lastName","phone","email"])
+            update_form = Update("PERSON", ["id", "firstName", "lastName", "phone", "email"])
             update_form.run()
         if (selected_item == "Request"):
-            update_form = Update("REQUEST", ["id","description","submitionDate","startDate","endDate","pesonId"])
+            update_form = Update("REQUEST", ["id", "description", "submitionDate", "startDate", "endDate", "personId"])
             update_form.run()
         if (selected_item == "Event"):
-            update_form = Update("EVENT", ["id", "category", "description" ,"startDate", "endDate","eventRoomId"])
+            update_form = Update("EVENT", ["id", "category", "description", "startDate", "endDate", "eventRoomId"])
             update_form.run()
         if (selected_item == "Exhibit"):
-            update_form = Update("EXHIBIT", ["id","material","description","value","excavationPlace","excavationDate","categoryId","positionId"])
+            update_form = Update("EXHIBIT", ["id", "material", "description", "value", "excavationPlace", "excavationDate", "categoryId", "positionId"])
+            update_form.run()
+        if (selected_item == "Employee"):
+            update_form = Update("EMPLOYEE", ["id", "specialty"])
+            update_form.run()
+        if (selected_item == "Visits"):
+            update_form = Update("VISITS", ["id", "date", "category"])
+            update_form.run()
+        if (selected_item == "Event ticket"):
+            update_form = Update("EVENT_TICKET", ["id", "category", "eventId"])
+            update_form.run()
+        if (selected_item == "Visit ticket"):
+            update_form = Update("VISIT_TICKET", ["id", "category", "visitId"])
+            update_form.run()
+        if (selected_item == "Event Room"):
+            update_form = Update("EVENT_ROOM", ["id", "name", "description", "capacity"])
+            update_form.run()
+        if (selected_item == "Exchange Request"):
+            update_form = Update("EXGANGE_REQUEST", ["id", "country", "city", "postCode", "address", "addressNumber", "phone"])
+            update_form.run()
+        if (selected_item == "Research Request"):
+            update_form = Update("RESEARCH_REQUEST", ["id", "type", "description"])
+            update_form.run()
+        if (selected_item == "Event Request"):
+            update_form = Update("EVENT_REQUEST", ["id", "type", "eventId"])
+            update_form.run()
+        if (selected_item == "Room Request"):
+            update_form = Update("ROOM_REQUEST", ["id", "pieceCapacity", "description"])
+            update_form.run()
+        if (selected_item == "Position"):
+            update_form = Update("POSITION", ["id", "column", "row"])
+            update_form.run()
+        if (selected_item == "Category"):
+            update_form = Update("CATEGORY", ["id", "start_date", "end_date", "name"])
+            update_form.run()
+        if (selected_item == "Dimensions"):
+            update_form = Update("DIMENSIONS", ["id", "height", "width", "length", "exhibitId"])
+            update_form.run()
+        if (selected_item == "Plans"):
+            update_form = Update("PLANS", ["emploeeyId", "eventId"])
+            update_form.run()
+        if (selected_item == 'Refers to research'):
+            update_form = Update('REFERS_TO_RESEARCH', ["researchId", "exhibitId"])
+            update_form.run()
+        if (selected_item == "Refers to exchange"):
+            update_form = Update("REFERS_TO_EXCHANGE", ["exchangeId", "exhibitId"])
+            update_form.run()
+        if (selected_item == "Approve"):
+            update_form = Update("APPROVE", ["id", "approveDate", "requestId", "employeeId"])
+            update_form.run()
+        if (selected_item == "REQUEST_REFERS_ROOM"):
+            update_form = Update("REQUEST_REFERS_ROOM", ["roomId", "requestId", "startDate", "endDate"])
             update_form.run()
 
     #Handle button clicks for deleting data
@@ -105,6 +223,28 @@ class MainLayout:
         self.root.destroy()
         delete_form = Delete(selected_item, ["id"])
         delete_form.run()
+        
+    #Handle button clicks for custom queries
+    def exhibit_position_button_click(self):
+        selected_item = self.combo_box.get()
+        self.root.destroy()
+        position_form = ExhibitPosition(selected_item)
+        position_form.run()
+        
+    def event_categories_button_click(self):
+        self.root.destroy()
+        answer_form = EventCategories()
+        answer_form.run()
+        
+    def exhibit_categories_button_click(self):
+        self.root.destroy()
+        answer_form = ExhibitCategories()
+        answer_form.run()
+        
+    def exhibitbycategory_button_click(self):
+        self.root.destroy()
+        answer_form = ExhibitByCategoryName()
+        answer_form.run()
 
     #Start the main loop
     def run(self):
@@ -179,11 +319,11 @@ class Read:
 
         self.root = tk.Tk()
         self.root.title(f"Read {self.tablename} Data")
-        self.root.geometry("900x600")
+        self.root.geometry("900x500")
 
         #Creates a Treeview widget in order to present data as a table
         self.tree = ttk.Treeview(self.root) #
-        self.tree['columns'] = ('ID',)  # Assuming the first column is ID
+        self.tree['columns'] = ('',)  # Assuming the first column is ID
         self.tree.heading('#0', text='ID')
 
         #Fetch column names from the database
@@ -329,7 +469,6 @@ class Delete:
         delete_button = customtkinter.CTkButton(master=self.root, text='Delete', font=("Courier", 16), command=self.delete_button_click)
         delete_button.place(relx=0.08, rely=0.7, anchor=tk.W)
 
-        
         clear_button = customtkinter.CTkButton(master=self.root, text='Clear', font=("Courier", 16), command=self.clear_input_fields)
         clear_button.place(relx=0.38, rely=0.7, anchor=tk.W)
 
@@ -360,6 +499,229 @@ class Delete:
     def run(self):
         self.root.mainloop()
         self.museum_db.conn.close()
+
+# Class to find exhibits that belong to a certain category    
+class ExhibitByCategoryName:
+    def __init__(self):
+        
+        self.entryBoxList = []
+        
+        self.museum_db = handler.MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
+    
+    
+        self.result = ""
+        
+        self.root = tk.Tk()
+        self.root.title(f"Exhibit")
+        self.root.geometry("600x300")
+        
+        self.result_label = ""
+        
+        self.create_widgets()
+    
+    #Create widgets for deleting data  
+    def create_widgets(self):
+        
+        delete_label = tk.Label(self.root, text=f'Find the exhibit by the category that it belongs', font=("Courier", 18))
+        delete_label.pack()
+        
+        label = tk.Label(self.root, text="Category", font=("Arial", 16))
+        label.pack()
+        entry = tk.Entry(self.root, font=("Courier", 16))
+        self.entryBoxList.append(entry)
+        entry.pack()
+        self.result_label = tk.Label(self.root, text=f"Result: {self.result}", font=("Arial", 16), name="result_label")
+        self.result_label.pack()
+
+        find_button = customtkinter.CTkButton(master=self.root, text='Find', font=("Courier", 16), command=self.find_button_click)
+        find_button.place(relx=0.08, rely=0.7, anchor=tk.W)
+
+        clear_button = customtkinter.CTkButton(master=self.root, text='Clear', font=("Courier", 16), command=self.clear_input_fields)
+        clear_button.place(relx=0.38, rely=0.7, anchor=tk.W)
+
+        exit_button = customtkinter.CTkButton(master=self.root, text='Exit', font=("Courier", 16), command=self.destroy)
+        exit_button.place(relx=0.68, rely=0.7, anchor=tk.W)     
+    
+    #Destroy this interface and recreate the main one    
+    def destroy(self):
+        self.root.destroy()
+        a = CTk()
+        b = MainLayout(a)
+        b.run()
+    
+    #Handle button click for deleting data
+    def find_button_click(self):
+        values = {child.winfo_name(): child.get() for child in self.root.winfo_children() if isinstance(child, tk.Entry)}
+        
+        self.result= self.museum_db.getExhibitByCategoryName(categoryName=(self.entryBoxList[0].get()))
+        print(self.result)
+        self.museum_db.conn.close()
+        self.result_label.config(text=f"Result: {self.result}")
+        return self.result
+        
+    
+    #Clear input fields   
+    def clear_input_fields(self):
+        for child in self.root.winfo_children():
+            if isinstance(child, tk.Entry):
+                child.delete(0, tk.END)
+
+    def run(self):
+        self.root.mainloop()
+        self.museum_db.conn.close()
+
+# Class to find the position of an exhibit
+class ExhibitPosition:
+    def __init__(self, attributes):
+        
+        self.entryBoxList = []
+        
+        self.museum_db = handler.MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
+    
+        self.attributes = attributes
+        self.result = ""
+        
+        self.root = tk.Tk()
+        self.root.title(f"Exhibit Position")
+        self.root.geometry("500x300")
+        
+        self.result_label = ""
+        
+        self.create_widgets()
+    
+    #Create widgets for deleting data  
+    def create_widgets(self):
+        delete_label = tk.Label(self.root, text=f'Find the position of an exhibit', font=("Courier", 18))
+        delete_label.pack()
+        
+        label = tk.Label(self.root, text="Id", font=("Arial", 16))
+        label.pack()
+        entry = tk.Entry(self.root, font=("Courier", 16))
+        self.entryBoxList.append(entry)
+        entry.pack()
+        self.result_label = tk.Label(self.root, text=f"Result: {self.result}", font=("Arial", 16), name="result_label")
+        self.result_label.pack()
+
+        find_button = customtkinter.CTkButton(master=self.root, text='Find', font=("Courier", 16), command=self.find_button_click)
+        find_button.place(relx=0.08, rely=0.7, anchor=tk.W)
+
+        clear_button = customtkinter.CTkButton(master=self.root, text='Clear', font=("Courier", 16), command=self.clear_input_fields)
+        clear_button.place(relx=0.38, rely=0.7, anchor=tk.W)
+
+        exit_button = customtkinter.CTkButton(master=self.root, text='Exit', font=("Courier", 16), command=self.destroy)
+        exit_button.place(relx=0.68, rely=0.7, anchor=tk.W)     
+    
+    #Destroy this interface and recreate the main one    
+    def destroy(self):
+        self.root.destroy()
+        a = CTk()
+        b = MainLayout(a)
+        b.run()
+    
+    #Handle button click for deleting data
+    def find_button_click(self):
+        values = {child.winfo_name(): child.get() for child in self.root.winfo_children() if isinstance(child, tk.Entry)}
+        
+        self.result= self.museum_db.getExhibitPosition(exhibitId=(self.entryBoxList[0].get()))
+        print(self.result)
+        self.museum_db.conn.close()
+        self.result_label.config(text=f"Result: {self.result}")
+        return self.result
+        
+    
+    #Clear input fields   
+    def clear_input_fields(self):
+        for child in self.root.winfo_children():
+            if isinstance(child, tk.Entry):
+                child.delete(0, tk.END)
+
+    def run(self):
+        self.root.mainloop()
+        self.museum_db.conn.close()
+
+# Class to find the event categories 
+class EventCategories:
+        def __init__(self):
+            self.museum_db = handler.MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
+           
+            self.root = tk.Tk()
+            self.root.title(f"Event Categories")
+            self.root.geometry("400x200")
+
+
+            # Fetch data
+            data = ", ".join([item[0] for item in self.museum_db.getEventCategories()])
+
+            # Display data
+            label = tk.Label(self.root, text=f"Result: {data}", font=("Arial", 16))
+            label.pack()
+
+
+            clear_button = customtkinter.CTkButton(master=self.root, text='Clear', font=("Courier", 16), command=self.clear_input_fields)
+            clear_button.place(relx=0.1, rely=0.7, anchor=tk.W)
+
+            exit_button = customtkinter.CTkButton(master=self.root, text='Exit', font=("Courier", 16), command=self.destroy)
+            exit_button.place(relx=0.6, rely=0.7, anchor=tk.W)
+
+    #Destroy this interface and recreate the main one
+        def destroy(self):
+            self.root.destroy()
+            a = CTk()
+            b = MainLayout(a)
+            b.run()
+                
+        #Clear input fields
+        def clear_input_fields(self):
+            for child in self.root.winfo_children():
+                if isinstance(child, tk.Entry):
+                    child.delete(0, tk.END)
+
+        def run(self):
+            self.root.mainloop()
+            self.museum_db.conn.close()
+ 
+ # Class for deleting data by id           
+
+# Class to find the categories of the exhibits
+class ExhibitCategories:
+        def __init__(self):
+            self.museum_db = handler.MuseumDatabase('ArcheologicalMuseum.db', "schema.sql")
+           
+            self.root = tk.Tk()
+            self.root.title(f"Event Categories")
+            self.root.geometry("400x200")
+
+
+            # Fetch data
+            data = ", ".join([item[0] for item in self.museum_db.getExhibitCategories()])
+
+            # Display data
+            label = tk.Label(self.root, text=f"Result: {data}", font=("Arial", 16))
+            label.pack()
+
+
+            clear_button = customtkinter.CTkButton(master=self.root, text='Clear', font=("Courier", 16), command=self.clear_input_fields)
+            clear_button.place(relx=0.1, rely=0.7, anchor=tk.W)
+
+            exit_button = customtkinter.CTkButton(master=self.root, text='Exit', font=("Courier", 16), command=self.destroy)
+            exit_button.place(relx=0.6, rely=0.7, anchor=tk.W)
+
+    #Destroy this interface and recreate the main one
+        def destroy(self):
+            self.root.destroy()
+            a = CTk()
+            b = MainLayout(a)
+            b.run()
+                
+        #Clear input fields
+        def clear_input_fields(self):
+            for child in self.root.winfo_children():
+                if isinstance(child, tk.Entry):
+                    child.delete(0, tk.END)
+
+        def run(self):
+            self.root.mainloop()
+            self.museum_db.conn.close()
         
 #Start the program
 if __name__ == "__main__":
